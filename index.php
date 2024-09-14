@@ -94,6 +94,10 @@ $bot->cmd("/cmdlist", function () {
  ↳/mv : Move a file to another folder
  ↳/rm : Delete a file
 
+📁vnstat commands
+ ↳/vnstat : Lists of connected client devices
+ ↳*-Supported old vnstat and vnstat2.
+
 📁System
  ↳/sysinfo : System Information
  ↳/memory : Memory status 
@@ -627,10 +631,10 @@ $bot->cmd("/adbsms", function ($adbcmd4) {
 	$rmrunsh = shell_exec("rm tmpadbsms");
 });
 
-$bot->cmd("/adbrestnet", function ($adbcmd5) {
+$bot->cmd("/adbrestnet", function ($adbcmd5, $adbcmd6, $adbcmd7, $adbcmd8, $adbcmd9) {
     Bot::sendMessage(
 		$GLOBALS["banner"] . "\n" .
-        "<code>" . shell_exec("src/plugins/adb-refresh-network.sh $adbcmd5 > tmpadbrestnet && cat tmpadbrestnet") . "</code>"
+        "<code>" . shell_exec("src/plugins/adb-refresh-network.sh \"$adbcmd5\" $adbcmd6 $adbcmd7 $adbcmd8 $adbcmd9 > tmpadbrestnet && cat tmpadbrestnet") . "</code>"
 		. "\n\n" . $GLOBALS["randAds"]
         ,$GLOBALS["options"]);
 	$rmrunsh = shell_exec("rm tmpadbrestnet");

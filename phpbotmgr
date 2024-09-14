@@ -24,9 +24,11 @@ chkIPK () {
 	gbsPkg=$( opkg list-installed | grep -c "^git -\|^git-http -\|^bc -\|^screen -\|^httping -\|^adb -" )
 	p7Pkg=$( opkg list-installed | grep -c "^php7-cli -\|^php7-mod-curl -" )
 	p8Pkg=$( opkg list-installed | grep -c "^php8-cli -\|^php8-mod-curl -" )
+	vst1=$( opkg list-installed | grep -c "^vnstati -" )
+	vst2=$( opkg list-installed | grep -c "^vnstati2 -" )
 		
 	# Checking if packages installed
-	if [[ $gbsPkg -lt 5 ]] && [[ $p7Pkg -lt 2 || $p8Pkg -lt 2 ]]; then
+	if [[ $gbsPkg -lt 5 ]] && [[ $p7Pkg -lt 2 || $p8Pkg -lt 2 ]] && [[ $vst1 -lt 1 || $vst2 -lt 1 ]]; then
 		echo -e "All/some required packages is not installed correctly or something wrong...."
 		echo -e "Updating package repositories for $TLNAME..."
 		opkg update
@@ -43,7 +45,7 @@ bootX () {
 		sed -i 's#exit 0##g' /etc/rc.local
 		cat << 'EOF' >> /etc/rc.local
 #PHPTeleBotWrt-Start
-cd /root/PHPTeleBotWrt && if [[ $(ls {/bin,/usr/bin,/usr/sbin} | grep -c "^php8-cli") > 0 ]];then nohup php8-cli index.php &>/dev/null &;else nohup php-cli index.php &>/dev/null &; fi
+cd /root/PHPTeleBotWrt && if [[ $(ls {/bin,/usr/bin,/usr/sbin} | grep -c "^php8-cli") > 0 && $(ps aux | grep -c "PHPTeleBotWrt") < 2 ]];then php8-cli index.php &>dev/null;else php-cli index.php &>dev/null; fi
 #PHPTeleBotWrt-End
 
 exit 0
@@ -61,7 +63,7 @@ cronX () {
 		sed -i 's#exit 0##g' /etc/crontabs/root
 		cat << 'EOF' >> /etc/crontabs/root
 #PHPTeleBotWrt-Start
-*/4 * * * * cd /root/PHPTeleBotWrt && if [[ $(ls {/bin,/usr/bin,/usr/sbin} | grep -c "^php8-cli") > 0 ]];then php8-cli index.php;else php-cli index.php; fi
+*/4 * * * * cd /root/PHPTeleBotWrt && if [[ $(ls {/bin,/usr/bin,/usr/sbin} | grep -c "^php8-cli") > 0 && $(ps aux | grep -c "PHPTeleBotWrt") < 2 ]];then php8-cli index.php;else php-cli index.php; fi
 EOF
 		echo -e "$TLNAME added to Scheduled Tasks (cron).."
 	else
@@ -118,6 +120,22 @@ if [[ $1 == "i" ]]; then
 			echo -e "Try to install php8 deps..."
 			insIPK php8-cli
 			insIPK php8-mod-curl
+		fi
+	else
+		echo -e "Package: PHP packages already installed." 
+	fi
+	
+	# Try install vnstati/vnstati2 if is not installed
+	if [[ $(ls {/bin,/usr/bin,/usr/sbin} | grep -c "^vnstati") -lt 1 ]]; then
+		# install vnstati if vnstati2 is not available on the repo
+		if [[ $(opkg list | grep -c "^vnstati2 -") == 0 ]];then
+			# Try install vnstati
+			echo -e "Try to install vnstati deps..." 
+			insIPK vnstati
+		else
+			# Try install vnstati2
+			echo -e "Try to install vnstati2 deps..."
+			insIPK vnstati2
 		fi
 	else
 		echo -e "Package: PHP packages already installed." 
