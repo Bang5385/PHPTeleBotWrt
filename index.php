@@ -105,7 +105,7 @@ $bot->cmd("/cmdlist", function () {
  ↳/turnoff : Turn off OpenWrt
  
 📁Network Information
- ↳/disconnect <MAC>\nVí dụ: /disconnect 11:22:33:44:55:66",
+ ↳/disconnect: <MAC>\nVí dụ: /disconnect 11:22:33:44:55:66
  ↳/netcl : Lists of connected client devices
  ↳/fwlist : Firewall lists
  ↳/ifcfg interface : List of device interface 
