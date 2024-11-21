@@ -18,12 +18,7 @@ $bot = new PHPTelebot(readToken("token"), readToken("username"));
 
 // random messages
 $ads = [
-		"<span class='tg-spoiler'>Donate me: <a href='https://helmiau.com/pay'>https://helmiau.com/pay</a>.</span>",
-		"<span class='tg-spoiler'>Keep PHPTeleBotWrt up-to-date with <code>phpmgrbot u</code> command in Terminal or through /botup command in telegram bot chat.</span>",
-		"<span class='tg-spoiler'>Read PHPTeleBotWrt wiki and information <a href='https://www.helmiau.com/blog/phptelebotwrt'>here</a>.</span>",
-		"<span class='tg-spoiler'>PHPTeleBotWrt devs: <a href='https://github.com/radyakaze/phptelebot'>radyakaze</a>, <a href='https://github.com/OppaiCyber/XppaiWRT'>OppaiCyber-XppaiWRT</a>, <a href='https://github.com/xentolopx/eXppaiWRT'>xentolopx-eXppaiWRT</a> and <a href='https://helmiau.com/pay'>Helmi Amirudin</a>.</span>",
-		"<span class='tg-spoiler'>Make sure your device always connected to network.</span>",
-        "<span class='tg-spoiler'>Support eXppaiWRT to by sending fund to BCA : 0131630831 | DANA / OVO : 087837872813 | Dimas Syahrul Hidayat</span>",
+		"<span class='PHPTeleBotWrt‘</span>",
     ];
 $randAds = $ads[array_rand($ads)];
 
@@ -44,7 +39,7 @@ $bot->cmd("/ping", function () {
 $bot->cmd("/start", function () {
     Bot::sendMessage(
 		$GLOBALS["banner"] . "\n" .
-		"Welcome to PHPTeleBotWrt!\nRun /cmdlist to see all available comands.\n\n Source: https://github.com/helmiau/PHPTeleBotWrt\n Donate: https://helmiau.com/pay"
+		"Welcome to PHPTeleBotWrt!\nRun /cmdlist to see all available comands."
 		. "\n\n" . $GLOBALS["randAds"]
 		,$GLOBALS["options"]);
 });
@@ -141,7 +136,6 @@ $bot->on('document', function() {
 	$fileName = $message['document']['file_name'];
     Bot::sendMessage(
 		"File <code>$fileName</code> uploaded to Telegram server. Reply uploaded file with command <code>/ul /folder/folder_dest</code> to upload it to that folder. Change <code>/folder/folder_dest</code> to your own destination folder.". "\n\n" .
-		"File <code>$fileName</code> telah diunggah ke server Telegram. Balas file yang sudah di unggah dengan perintah <code>/ul /folder/folder_dest</code> untuk mengunggahnya ke folder tersebut. Ubah <code>/folder/folder_dest</code> dengan folder tujuan anda."
 		,$GLOBALS["options"]);
  });
 
@@ -163,7 +157,7 @@ $bot->cmd("/ul", function ($filedir) {
 		$pesan_upf = "Directory<code>$filedir</code> is invalid!." . "\n" .
 		"Folder<code>$filedir</code> tidak valid!." . "\n\n" .
 		"<strong><u>OpenWrt File Uploader</u></strong>\n- Upload a file to this chat first.\n- Then reply uploaded file with command <code>/ul /folder/folder_dest</code> to upload it to that folder. Change <code>/folder/folder_dest</code> to your own destination folder.\n- Only support single file upload." . "\n\n" .
-		"<strong><u>Pengunggah Berkas OpenWrt</u></strong>\n- Unggah file ke chat ini terlebih dahulu.\n- Lalu balas file yang sudah di unggah dengan perintah <code>/ul /folder/folder_dest</code> untuk mengunggahnya ke folder tersebut. Ubah <code>/folder/folder_dest</code> ke folder tujuan anda.\n- Hanya mendukung upload satu file saja.";
+		;
 	}
 	
 	Bot::sendMessage(
@@ -197,7 +191,7 @@ $bot->cmd("/dl", function ($filedir) {
 			,$GLOBALS["options"]);
 	} else {
 		Bot::sendMessage(
-		"Please input correct command. Example: <code>/dl /folder1/filename.ext</code>.\n Or file doesn't exists on the server.\n\nTulis perintah dengan benar. Contoh: <code>/dl /folder1/filename.ext</code>\n Atau mungkin file tidak ada di server."
+		"Please input correct command. Example: <code>/dl /folder1/filename.ext</code>.\n Or file doesn't exists on the server.\n\nTulis perintah dengan benar. Contoh: <code>/dl /folder1/filename.ext</code>"
 		,$GLOBALS["options"]);
 	}
 	unset($token);
@@ -216,7 +210,7 @@ $bot->cmd("/cp", function ($cpold, $cpnew) {
 			,$GLOBALS["options"]);
     } else {
 		Bot::sendMessage(
-		"Please input correct command. Example: <code>/cp /oldfolder/file.txt /newfolder/file.txt</code>.\n Or file source/destination doesn't exists on the server.\n\nTulis perintah dengan benar. Contoh: <code>/cp /oldfolder/file.txt /newfolder/file.txt</code>\n Atau mungkin file asal/tujuan tidak ada di server."
+		"Please input correct command. Example: <code>/cp /oldfolder/file.txt /newfolder/file.txt</code>.\n Or file source/destination doesn't exists on the server."
 		,$GLOBALS["options"]);
     }
 	unset($cpold);
@@ -234,7 +228,7 @@ $bot->cmd("/mv", function ($mvold, $mvnew) {
 			,$GLOBALS["options"]);
     } else {
 		Bot::sendMessage(
-		"Please input correct command. Example: <code>/mv /oldfolder/file.txt /newfolder/file.txt</code>.\n Or file source/destination doesn't exists on the server.\n\nTulis perintah dengan benar. Contoh: <code>/mv /oldfolder/file.txt /newfolder/file.txt</code>\n Atau mungkin file asal/tujuan tidak ada di server."
+		"Please input correct command. Example: <code>/mv /oldfolder/file.txt /newfolder/file.txt</code>.\n Or file source/destination doesn't exists on the server."
 		,$GLOBALS["options"]);
     }
 	unset($mvold);
@@ -252,7 +246,7 @@ $bot->cmd("/rm", function ($rmfile) {
 			,$GLOBALS["options"]);
     } else {
 		Bot::sendMessage(
-		"Please input correct command. Example: <code>/rm /folder/file.txt</code>.\n Or file source/destination doesn't exists on the server.\n\nTulis perintah dengan benar. Contoh: <code>/rm /folder/file.txt</code>\n Atau mungkin file asal/tujuan tidak ada di server."
+		"Please input correct command. Example: <code>/rm /folder/file.txt</code>.\n Or file source/destination doesn't exists on the server."
 		,$GLOBALS["options"]);
     }
 	unset($rmfile);
