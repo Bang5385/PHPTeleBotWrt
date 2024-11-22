@@ -44,102 +44,92 @@ $bot->cmd("/start", function () {
 		,$GLOBALS["options"]);
 });
 
-$bot->cmd("/cmdlist", function () {
-    // Kiểm tra trạng thái cron job
-    $check_cron_stat = shell_exec("grep -c 'PHPTeleBotWrt' '/etc/crontabs/root'");
-    $cron_stat = (empty($check_cron_stat)) ? "NOT ACTIVE" : "ACTIVE";
-    unset($check_cron_stat);
-    
-    // Kiểm tra trạng thái rc.local
-    $check_boot_stat = shell_exec("grep -c 'PHPTeleBotWrt' '/etc/rc.local'");
-    $boot_stat = (empty($check_boot_stat)) ? "NOT ACTIVE" : "ACTIVE";
-    unset($check_boot_stat);
-    
-    // Kiểm tra nếu các biến toàn cục đã được set
-    if (!isset($GLOBALS["banner"]) || !isset($GLOBALS["randAds"]) || !isset($GLOBALS["options"])) {
-        error_log("Một trong các biến toàn cục banner, randAds, hoặc options không tồn tại.");
-        return;
-    }
-    
-    // Tạo tin nhắn
-    $message = $GLOBALS["banner"] . "\n" .
-        "📁PHPTeleBotWrt Manager
-        ↳/botup : Update bot binaries
-        ↳/botas : Add/remove bot to/from auto start on boot [$boot_stat]
-        ↳/botcr : Add/remove bot to/from cron job [$cron_stat]
-        
-        📁Aria2 Commands
-        ↳/aria2add : Add task
-        ↳/aria2stats : Aria2 status
-        ↳/aria2pause : Pause all
-        ↳/aria2resume : Resume all
-        
-        📁OpenClash Commands
-        ↳/oc : OC Information
-        ↳/ocst : Start/Restart Openclash
-        ↳/ocsp : Stop Openclash
-        ↳/ocpr : Proxies status 
-        ↳/ocrl : Rule list 
-        ↳/ocup : Update Openclash app only
-        ↳/ocua : Update Openclash and all cores
-        
-        📁File Manager
-        ↳/ul : Upload a file to OpenWrt
-        ↳/dl : Get/retrieve a file from OpenWrt
-        ↳/cp : Copy a file to another folder
-        ↳/mv : Move a file to another folder
-        ↳/rm : Delete a file
-        
-        📁vnstat commands
-        ↳/vnstat : Lists of connected client devices
-        ↳*-Supported old vnstat and vnstat2.
-        
-        📁System
-        ↳/sysinfo : System Information
-        ↳/memory : Memory status 
-        ↳/sh commandSample : Run custom command in bash terminal
-        ↳/rs ls : List of compatible app restart
-        ↳/rs appname : Restart app in init.d
-        
-        📁Power System
-        ↳/reboot : Reboot OpenWrt
-        ↳/turnoff : Turn off OpenWrt
-        
-        📁Network Information
-        ↳/disconnect: <MAC> Ví dụ: /disconnect 11:22:33:44:55:66
-        ↳/netcl : Lists of connected client devices
-        ↳/fwlist : Firewall lists
-        ↳/ifcfg interface : List of device interface 
-        ↳/vnstat : Bandwidth usage 
-        ↳/vnstati : Better Bandwidth usage 
-        ↳/myip : Get ip details 
-        ↳/speedtest : Speedtest 
-        ↳/ping : Ping bot
-        
-        📁ADB Features (required adb installed)
-        ↳/adb commandSample : Run basic ADB command
-        ↳/adbdev : ADB Android ID device lists
-        ↳/adbinfo ADB_ID: Retrieve device information
-        ↳/adbrestnet ADB_ID DELAY: Restart device network
-        ↳/adbsms ADB_ID: Retrieve SMS from device ID
-        ↳*-Replace [ADB_ID] with your device id, take from [adb devices] command.
-        ↳*-You can check multiple [ADB_ID] by writing like [\"adbid001 adbid002 adbid003\"] with double quotes.
-        ↳*-[DELAY] is a delay (seconds) between disabling and re-enabling airplane mode for network restart."
-        . "\n\n" . $GLOBALS["randAds"]
-        , $GLOBALS["options"];
-    
-    // Gửi tin nhắn
-    $response = Bot::sendMessage($message);
-    
-    // Kiểm tra lỗi khi gửi tin nhắn
-    if (!$response) {
-        error_log("Lỗi khi gửi tin nhắn.");
-    }
-    
-    // Xóa biến toàn cục không cần thiết
-    unset($boot_stat, $cron_stat);
-});
 
+// list of commands
+$bot->cmd("/cmdlist", function () {
+    $check_cron_stat = shell_exec("grep -c 'PHPTeleBotWrt' '/etc/crontabs/root'");
+    if ($check_cron_stat === 0) {
+        $cron_stat = "NOT ACTIVE";
+    } else {
+        $cron_stat = "ACTIVE";
+    }
+	unset($check_cron_stat);
+    $check_boot_stat = shell_exec("grep -c 'PHPTeleBotWrt' '/etc/rc.local'");
+    if ($check_boot_stat === 0) {
+        $boot_stat = "NOT ACTIVE";
+    } else {
+        $boot_stat = "ACTIVE";
+    }
+	unset($check_boot_stat);
+	Bot::sendMessage(
+		$GLOBALS["banner"] . "\n" .
+"📁PHPTeleBotWrt Manager
+ ↳/botup : Update bot binaries
+ ↳/botas : Add/remove bot to/from auto start on boot [$boot_stat]
+ ↳/botcr : Add/remove bot to/from cron job [$cron_stat]
+ 
+ 📁Aria2 Commands
+ ↳/aria2add : Add task
+ ↳/aria2stats : Aria2 status
+ ↳/aria2pause : Pause all
+ ↳/aria2resume : Resume all
+ 
+📁OpenClash Commands
+ ↳/oc : OC Information
+ ↳/ocst : Start/Restart Openclash
+ ↳/ocsp : Stop Openclash
+ ↳/ocpr : Proxies status 
+ ↳/ocrl : Rule list 
+ ↳/ocup : Update Openclash app only
+ ↳/ocua : Update Openclash and all cores
+
+📁File Manager
+ ↳/ul : Upload a file to OpenWrt
+ ↳/dl : Get/retrieve a file from OpenWrt
+ ↳/cp : Copy a file to another folder
+ ↳/mv : Move a file to another folder
+ ↳/rm : Delete a file
+
+📁vnstat commands
+ ↳/vnstat : Lists of connected client devices
+ ↳*-Supported old vnstat and vnstat2.
+
+📁System
+ ↳/sysinfo : System Information
+ ↳/memory : Memory status 
+ ↳/sh commandSample : Run custom command in bash terminal
+ ↳/rs ls : List of compatible app restart
+ ↳/rs appname : Restart app in init.d
+ 
+📁Power System
+ ↳/reboot : Reboot OpenWrt
+ ↳/turnoff : Turn off OpenWrt
+ 
+📁Network Information
+ ↳/netcl : Lists of connected client devices
+ ↳/fwlist : Firewall lists
+ ↳/ifcfg interface : List of device interface 
+ ↳/vnstat : Bandwidth usage 
+ ↳/vnstati : Better Bandwidth usage 
+ ↳/myip : Get ip details 
+ ↳/speedtest : Speedtest 
+ ↳/ping : Ping bot
+
+📁ADB Features (required adb installed)
+ ↳/adb commandSample : Run basic ADB command
+ ↳/adbdev : ADB Android ID device lists
+ ↳/adbinfo ADB_ID: Retrieve device information
+ ↳/adbrestnet ADB_ID DELAY: Restart device network
+ ↳/adbsms ADB_ID: Retrieve SMS from device ID
+ ↳*-Replace [ADB_ID] with your device id, take from [adb devices] command.
+ ↳*-You can check multiple [ADB_ID] by writing like [\"adbid001 adbid002 adbid003\"] with double quotes.
+ ↳*-[DELAY] is a delay (seconds) between disabling and re-enabling airplane mode for network restart."
+ 
+		. "\n\n" . $GLOBALS["randAds"]
+		,$GLOBALS["options"]);
+	unset($boot_stat);
+	unset($cron_stat);
+});
 
 
 // when file uploaded
