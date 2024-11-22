@@ -5,7 +5,7 @@ MAC=$1
 
 # Kiểm tra nếu MAC không trống
 if [ -z "$MAC" ]; then
-    echo "Không có địa chỉ MAC"
+    echo -e "Không có địa chỉ MAC"
     exit 1
 fi
 
@@ -13,4 +13,4 @@ fi
 iw dev $INTERFACE1 station del $MAC
 iw dev $INTERFACE2 station del $MAC
 
-echo "Đã ngắt kết nối thiết bị với MAC $MAC khỏi Wi-Fi"
+echo -e "Đã ngắt kết nối thiết bị với MAC $MAC khỏi Wi-Fi"
