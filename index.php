@@ -793,5 +793,8 @@ $bot->on("inline", function ($cmd, $input) {
 
     return Bot::answerInlineQuery($results, $GLOBALS["options"]);
 });
-
+$response = Bot::sendMessage($message);
+if (!$response) {
+    echo "Lỗi khi gửi tin nhắn!";
+}
 $bot->run();
