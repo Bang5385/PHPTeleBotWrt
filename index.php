@@ -445,11 +445,13 @@ $bot->cmd("/disconnect", function ($args) {
     
     $mac = $args[0]; // Địa chỉ MAC được cung cấp từ lệnh
     
-    // Kiểm tra tính hợp lệ của địa chỉ MAC
-    if (!preg_match('/^([0-9a-fA-F]{2}(:|$)){5}[0-9a-fA-F]{2}$/', $mac)) {
-        Bot::sendMessage("Địa chỉ MAC không hợp lệ. Vui lòng kiểm tra lại.", $GLOBALS["options"]);
-        return;
-    }
+// Kiểm tra tính hợp lệ của địa chỉ MAC
+if (!preg_match('/^([0-9a-fA-F]{2}(:|$)){5}[0-9a-fA-F]{2}$/', $mac)) {
+    // Trả lại giá trị đã nhập cùng với thông báo lỗi
+    Bot::sendMessage("Địa chỉ MAC không hợp lệ: $mac. Vui lòng kiểm tra lại.", $GLOBALS["options"]);
+    return;
+}
+
     
     // Chạy shell script để ngắt kết nối thiết bị
     $result = shell_exec("src/plugins/disconnect_wifi.sh $mac");
