@@ -435,19 +435,22 @@ $bot->cmd("/vnstat", function ($input) {
     }
 });
 
-//disconnect
-$bot->cmd("/disconnect", function ($mac) {
+$bot->cmd("/disconnect", function ($input) {
+    // Trim spaces and validate the MAC address
+    $mac = trim($input);
+
     if (empty($mac) || !preg_match('/^([0-9a-fA-F]{2}(:|$)){5}[0-9a-fA-F]{2}$/', $mac)) {
         Bot::sendMessage("Địa chỉ MAC không hợp lệ: $mac. Vui lòng kiểm tra lại.", $GLOBALS["options"]);
         return;
     }
 
-    // Chạy shell script để ngắt kết nối thiết bị
+    // Run the shell script to disconnect the device
     $result = shell_exec("src/plugins/disconnect_wifi.sh $mac");
 
-    // Kiểm tra và gửi kết quả
+    // Check and send the result
     Bot::sendMessage(trim($result) ?: "Không thể nhận phản hồi từ script.", $GLOBALS["options"]);
 });
+
 
 
 // vnstati
