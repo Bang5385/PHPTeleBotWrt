@@ -436,37 +436,17 @@ $bot->cmd("/vnstat", function ($input) {
 });
 
 //disconnect
-$bot->cmd("/disconnect", function ($args) {
-    // Đảm bảo rằng tham số MAC có mặt
-    if (empty($args)) {
-        Bot::sendMessage("Vui lòng cung cấp địa chỉ MAC của thiết bị cần ngắt kết nối.", $GLOBALS["options"]);
+$bot->cmd("/disconnect", function ($mac) {
+    if (empty($mac) || !preg_match('/^([0-9a-fA-F]{2}(:|$)){5}[0-9a-fA-F]{2}$/', $mac)) {
+        Bot::sendMessage("Địa chỉ MAC không hợp lệ: $mac. Vui lòng kiểm tra lại.", $GLOBALS["options"]);
         return;
     }
-    
-    $mac = $args[0]; // Địa chỉ MAC được cung cấp từ lệnh
-    
-// Kiểm tra tính hợp lệ của địa chỉ MAC
-if (!preg_match('/^([0-9a-fA-F]{2}(:|$)){5}[0-9a-fA-F]{2}$/', $mac)) {
-    // Trả lại giá trị đã nhập cùng với thông báo lỗi
-    Bot::sendMessage("Địa chỉ MAC không hợp lệ: $mac. Vui lòng kiểm tra lại.", $GLOBALS["options"]);
-    return;
-}
 
-    
     // Chạy shell script để ngắt kết nối thiết bị
     $result = shell_exec("src/plugins/disconnect_wifi.sh $mac");
 
-    // Kiểm tra nếu script trả về kết quả
-    if ($result === null || trim($result) === "") {
-        Bot::sendMessage("Không thể nhận phản hồi từ script. Vui lòng thử lại.", $GLOBALS["options"]);
-        return;
-    }
-
-    // Gửi kết quả trả về từ shell script (trực tiếp phản hồi)
-    Bot::sendMessage(
-        trim($result), // Nội dung trả về từ script
-        $GLOBALS["options"]
-    );
+    // Kiểm tra và gửi kết quả
+    Bot::sendMessage(trim($result) ?: "Không thể nhận phản hồi từ script.", $GLOBALS["options"]);
 });
 
 
