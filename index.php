@@ -44,18 +44,25 @@ $bot->cmd("/start", function () {
 		,$GLOBALS["options"]);
 });
 
-// list of commands
 $bot->cmd("/cmdlist", function () {
+    // Kiểm tra trạng thái cron job
     $check_cron_stat = shell_exec("grep -c 'PHPTeleBotWrt' '/etc/crontabs/root'");
     $cron_stat = (empty($check_cron_stat)) ? "NOT ACTIVE" : "ACTIVE";
     unset($check_cron_stat);
     
+    // Kiểm tra trạng thái rc.local
     $check_boot_stat = shell_exec("grep -c 'PHPTeleBotWrt' '/etc/rc.local'");
     $boot_stat = (empty($check_boot_stat)) ? "NOT ACTIVE" : "ACTIVE";
     unset($check_boot_stat);
     
-    Bot::sendMessage(
-        $GLOBALS["banner"] . "\n" .
+    // Kiểm tra nếu các biến toàn cục đã được set
+    if (!isset($GLOBALS["banner"]) || !isset($GLOBALS["randAds"]) || !isset($GLOBALS["options"])) {
+        error_log("Một trong các biến toàn cục banner, randAds, hoặc options không tồn tại.");
+        return;
+    }
+    
+    // Tạo tin nhắn
+    $message = $GLOBALS["banner"] . "\n" .
         "📁PHPTeleBotWrt Manager
         ↳/botup : Update bot binaries
         ↳/botas : Add/remove bot to/from auto start on boot [$boot_stat]
@@ -119,10 +126,20 @@ $bot->cmd("/cmdlist", function () {
         ↳*-You can check multiple [ADB_ID] by writing like [\"adbid001 adbid002 adbid003\"] with double quotes.
         ↳*-[DELAY] is a delay (seconds) between disabling and re-enabling airplane mode for network restart."
         . "\n\n" . $GLOBALS["randAds"]
-        , $GLOBALS["options"]
-    );
+        , $GLOBALS["options"];
+    
+    // Gửi tin nhắn
+    $response = Bot::sendMessage($message);
+    
+    // Kiểm tra lỗi khi gửi tin nhắn
+    if (!$response) {
+        error_log("Lỗi khi gửi tin nhắn.");
+    }
+    
+    // Xóa biến toàn cục không cần thiết
     unset($boot_stat, $cron_stat);
 });
+
 
 
 // when file uploaded
