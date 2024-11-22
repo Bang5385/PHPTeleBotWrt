@@ -445,17 +445,28 @@ $bot->cmd("/disconnect", function ($args) {
     
     $mac = $args[0]; // Địa chỉ MAC được cung cấp từ lệnh
     
+    // Kiểm tra tính hợp lệ của địa chỉ MAC
+    if (!preg_match('/^([0-9a-fA-F]{2}(:|$)){5}[0-9a-fA-F]{2}$/', $mac)) {
+        Bot::sendMessage("Địa chỉ MAC không hợp lệ. Vui lòng kiểm tra lại.", $GLOBALS["options"]);
+        return;
+    }
+    
     // Chạy shell script để ngắt kết nối thiết bị
     $result = shell_exec("src/plugins/disconnect_wifi.sh $mac");
 
-    // Gửi kết quả trả về từ shell script
+    // Kiểm tra nếu script trả về kết quả
+    if ($result === null || trim($result) === "") {
+        Bot::sendMessage("Không thể nhận phản hồi từ script. Vui lòng thử lại.", $GLOBALS["options"]);
+        return;
+    }
+
+    // Gửi kết quả trả về từ shell script (trực tiếp phản hồi)
     Bot::sendMessage(
-        $GLOBALS["banner"] . "\n" .
-        "<code>" . $result . "</code>" .
-        "\n\n" . $GLOBALS["randAds"],
+        trim($result), // Nội dung trả về từ script
         $GLOBALS["options"]
     );
 });
+
 
 // vnstati
 $bot->cmd("/vnstati", function () {
