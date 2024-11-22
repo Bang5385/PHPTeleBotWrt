@@ -671,28 +671,7 @@ $bot->cmd("/aria2resume", function () {
 
 //Aria2 cmd end
 
-// Lệnh ngắt Wi-Fi cho thiết bị với MAC Address
-$bot->cmd("/disconnect", function ($params) {
-    if (empty($params)) {
-        // Nếu không có tham số, hướng dẫn sử dụng
-        Bot::sendMessage(
-            "Sử dụng: /disconnect <MAC>\nVí dụ: /disconnect 11:22:33:44:55:66",
-            $GLOBALS["options"]
-        );
-        return;
-    }
 
-    $mac_address = $params[0]; // Lấy tham số MAC từ người dùng
-    $result = shell_exec("src/plugins/disconnect_wifi.sh " . escapeshellarg($mac_address));
-
-    // Gửi kết quả trả về
-    Bot::sendMessage(
-        $GLOBALS["banner"] . "\n" .
-        $result . "\n\n" .
-        $GLOBALS["randAds"],
-        $GLOBALS["options"]
-    );
-});
 
 
 // phpbotmgr update
