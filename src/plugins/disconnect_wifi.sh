@@ -1,16 +1,29 @@
-#!/bin/sh
+#!/bin/bash
 
-# Nhận địa chỉ MAC từ tham số đầu vào
-MAC=$1
-
-# Kiểm tra nếu MAC không trống
-if [ -z "$MAC" ]; then
-    echo "Không có địa chỉ MAC"
-    exit 1
+# Kiểm tra xem có tham số MAC không
+if [ -z "$1" ]; then
+  echo "Vui lòng cung cấp địa chỉ MAC."
+  exit 1
 fi
 
-# Ngắt kết nối thiết bị khỏi Wi-Fi
-iw dev $INTERFACE1 station del $MAC
-iw dev $INTERFACE2 station del $MAC
+MAC=$1
+INTERFACE1="phy0-ap0"
+INTERFACE2="phy1-ap0"
+# Kiểm tra nếu interface có hỗ trợ lệnh iw dev
+if ! iw dev $INTERFACE station dump > /dev/null 2>&1; then
+  echo "Không tìm thấy giao diện Wi-Fi $INTERFACE."
+  exit 1
+fi
 
-echo "Đã ngắt kết nối thiết bị với MAC $MAC khỏi Wi-Fi"
+# Kiểm tra xem địa chỉ MAC có đang kết nối không
+CONNECTED_MAC=$(iw dev $INTERFACE station dump | grep "Station" | awk '{print $2}' | grep -i "$MAC")
+
+if [ "$CONNECTED_MAC" == "$MAC" ]; then
+    # Ngắt kết nối
+    iw dev $INTERFACE1 disconnect
+    iw dev $INTERFACE2 disconnect
+    echo "Đã ngắt kết nối thiết bị với MAC $MAC khỏi Wi-Fi."
+else
+    echo "Không tìm thấy thiết bị với MAC $MAC đang kết nối."
+    exit 1
+fi
