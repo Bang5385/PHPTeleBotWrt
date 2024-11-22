@@ -107,6 +107,7 @@ $bot->cmd("/cmdlist", function () {
  
 📁Network Information
  ↳/netcl : Lists of connected client devices
+ ↳/disconnect: Disconnect wifi MAC
  ↳/fwlist : Firewall lists
  ↳/ifcfg interface : List of device interface 
  ↳/vnstat : Bandwidth usage 
