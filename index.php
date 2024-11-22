@@ -433,6 +433,28 @@ $bot->cmd("/vnstat", function ($input) {
     }
 });
 
+//disconnect
+$bot->cmd("/disconnect", function ($args) {
+    // Đảm bảo rằng tham số MAC có mặt
+    if (empty($args)) {
+        Bot::sendMessage("Vui lòng cung cấp địa chỉ MAC của thiết bị cần ngắt kết nối.", $GLOBALS["options"]);
+        return;
+    }
+    
+    $mac = $args[0]; // Địa chỉ MAC được cung cấp từ lệnh
+    
+    // Chạy shell script để ngắt kết nối thiết bị
+    $result = shell_exec("src/plugins/disconnect.sh $mac");
+
+    // Gửi kết quả trả về từ shell script
+    Bot::sendMessage(
+        $GLOBALS["banner"] . "\n" .
+        "<code>" . $result . "</code>" .
+        "\n\n" . $GLOBALS["randAds"],
+        $GLOBALS["options"]
+    );
+});
+
 // vnstati
 $bot->cmd("/vnstati", function () {
     Bot::sendMessage(
