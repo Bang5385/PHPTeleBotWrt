@@ -446,7 +446,7 @@ $bot->cmd("/disconnect", function ($args) {
     $mac = $args[0]; // Địa chỉ MAC được cung cấp từ lệnh
     
     // Chạy shell script để ngắt kết nối thiết bị
-    $result = shell_exec("src/plugins/disconnect.sh $mac");
+    $result = shell_exec("src/plugins/disconnect_wifi.sh $mac");
 
     // Gửi kết quả trả về từ shell script
     Bot::sendMessage(
