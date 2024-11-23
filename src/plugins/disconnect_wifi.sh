@@ -27,7 +27,7 @@ CONNECTED_MAC1=$(iw dev $INTERFACE1 station dump | grep "Station" | awk '{print 
 CONNECTED_MAC2=$(iw dev $INTERFACE2 station dump | grep "Station" | awk '{print $2}' | grep -i "$MAC")
 
 if [ "$CONNECTED_MAC1" == "$MAC" ] || [ "$CONNECTED_MAC2" == "$MAC" ]; then
-    # Ngắt kết nối
+    # Ngắt kết nối Wi-Fi
     if [ "$CONNECTED_MAC1" == "$MAC" ]; then
         iw dev $INTERFACE1 station del $MAC
         echo "Đã ngắt kết nối thiết bị với MAC $MAC khỏi giao diện $INTERFACE1."
@@ -37,6 +37,19 @@ if [ "$CONNECTED_MAC1" == "$MAC" ] || [ "$CONNECTED_MAC2" == "$MAC" ]; then
         echo "Đã ngắt kết nối thiết bị với MAC $MAC khỏi giao diện $INTERFACE2."
     fi
 else
-    echo "Không tìm thấy thiết bị với MAC $MAC đang kết nối."
-    exit 1
+    echo "Không tìm thấy thiết bị với MAC $MAC đang kết nối trên Wi-Fi."
 fi
+
+# Tìm IP tương ứng với MAC trên mạng LAN
+IP=$(ip neigh | grep "$MAC" | awk '{print $1}')
+
+if [ -z "$IP" ]; then
+  echo "Không tìm thấy IP của thiết bị với MAC $MAC trên mạng LAN."
+  exit 1
+fi
+
+echo "Địa chỉ IP của thiết bị có MAC $MAC là $IP."
+
+# Ngắt kết nối thiết bị trên LAN bằng IP
+ip neigh del $IP dev br-lan
+echo "Đã ngắt kết nối thiết bị với IP $IP trên mạng LAN."
