@@ -48,8 +48,7 @@ if [ -z "$IP" ]; then
   exit 1
 fi
 
-echo "Địa chỉ IP của thiết bị có MAC $MAC là $IP."
 
 # Ngắt kết nối thiết bị trên LAN bằng IP
 ip neigh del $IP dev br-lan
-echo "Đã ngắt kết nối thiết bị với IP $IP trên mạng LAN."
+echo "Đã ngắt kết nối thiết bị với IP $MAC trên mạng LAN."
