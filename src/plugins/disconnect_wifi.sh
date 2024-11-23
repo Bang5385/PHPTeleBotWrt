@@ -29,11 +29,11 @@ CONNECTED_MAC2=$(iw dev $INTERFACE2 station dump | grep "Station" | awk '{print 
 if [ "$CONNECTED_MAC1" == "$MAC" ] || [ "$CONNECTED_MAC2" == "$MAC" ]; then
     # Ngắt kết nối
     if [ "$CONNECTED_MAC1" == "$MAC" ]; then
-        iw dev $INTERFACE1 disconnect
+        iw dev $INTERFACE1 station del $MAC
         echo "Đã ngắt kết nối thiết bị với MAC $MAC khỏi giao diện $INTERFACE1."
     fi
     if [ "$CONNECTED_MAC2" == "$MAC" ]; then
-        iw dev $INTERFACE2 disconnect
+        iw dev $INTERFACE2 station del $MAC
         echo "Đã ngắt kết nối thiết bị với MAC $MAC khỏi giao diện $INTERFACE2."
     fi
 else
