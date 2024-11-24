@@ -221,8 +221,8 @@ elif [[ $1 == "u" ]]; then
 	[ -e "$INSDIR"-databot.bak ] && echo -e "Backup found! Restoring $TLNAME databot backup..." && mv "$INSDIR"-databot.bak "$INSDIR"/databot
 	
 	echo -e "cp -f /root/PHPTeleBotWrt/phpbotmgr /root/phpbotmgr && chmod 0755 /root/phpbotmgr" > /tmp/phpbotmgr_updater
-	echo -e "cp -f /root/PHPTeleBotWrt/98-client-join-notification  /etc/hotplug.d/dhcp/"
-	echo -e "cp -f /root/PHPTeleBotWrt/client-remove-notification.sh /usr/bin/client-remove-notification.sh"
+	cp -f /root/PHPTeleBotWrt/98-client-join-notification  /etc/hotplug.d/dhcp/98-client-join-notification
+	cp -f /root/PHPTeleBotWrt/client-remove-notification.sh /usr/bin/client-remove-notification.sh
 	chmod +x /etc/hotplug.d/dhcp/98-client-join-notification /usr/bin/client-remove-notification.sh
 	chmod 0755 /tmp/phpbotmgr_updater
 	/etc/init.d/cron restart
