@@ -219,13 +219,15 @@ elif [[ $1 == "u" ]]; then
 	# Restore databot if available
 	[ -e "$INSDIR"-databot.bak ] && echo -e "Backup found! Restoring $TLNAME databot backup..." && mv "$INSDIR"-databot.bak "$INSDIR"/databot
 
-	echo -e "cp -f /root/PHPTeleBotWrt/phpbotmgr /root/phpbotmgr && chmod 0755 /root/phpbotmgr" > /tmp/phpbotmgr_updater
-	echo -e "cp -f /root/PHPTeleBotWrt/98-client-join-notification /root/98-client-join-notification && chmod 0755 /root/98-client-join-notification" > /etc/hotplug.d/dhcp/98-client-join-notification
-	echo -e "cp -f /root/PHPTeleBotWrt/client-remove-notification.sh /root/client-remove-notification.sh && chmod 0755 /root/client-remove-notification.sh"  > /usr/bin/client-remove-notification.sh
+	echo -e "cp -f /root/PHPTeleBotWrt/phpbotmgr /root/phpbot && chmod 0755 /root/phpbotmgr" > /tmp/phpbotmgr_updater
+	echo -e "cp -f /root/PHPTeleBotWrt/98-client-join-notification /etc/hotplug.d/dhcp/98-client-join-notification && chmod +x /etc/hotplug.d/dhcp/98-client-join-notification" > /tmp/1.sh
+	echo -e "cp -f /root/PHPTeleBotWrt/client-remove-notification.sh /usr/bin/client-remove-notification.sh && chmod +x /usr/bin/client-remove-notification.sh"  > /tmp/2.sh
 
 	chmod +x /etc/hotplug.d/dhcp/98-client-join-notification /usr/bin/client-remove-notification.sh
 	chmod 0755 /tmp/phpbotmgr_updater
 	/etc/init.d/cron restart
+	sh /tmp/1.sh
+	sh /tmp/2.sh
 	sh /tmp/phpbotmgr_updater
 	rm -f /tmp/phpbotmgr_updater
 
