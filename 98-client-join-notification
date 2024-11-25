@@ -7,7 +7,7 @@ send_to_telegram() {
     token=$(uci get telegram-bot.mybot.token)
     chat_id=$(uci get telegram-bot.mybot.chat_id)
     if [[ -n "${token}" ]] && [[ -n "${chat_id}" ]]; then
-        curl -skim 10 --data disable_notification="false" --data parse_mode="MarkdownV2" --data chat_id="$chat_id" --data-urlencode "text=$1" "https://api.telegram.org/bot${token}/sendMessage" > /dev/null
+        curl -skim 10 --data disable_notification="false" --data parse_mode="PlainText" --data chat_id="$chat_id" --data-urlencode "text=$1" "https://api.telegram.org/bot${token}/sendMessage" > /dev/null
     else
         logger -p local0.info -t dhcp-join-notify "Error: Your telegram chat_id or token is empty"
     fi
@@ -27,17 +27,10 @@ if [ "$ACTION" = "update" ] || [ "$ACTION" = "add" ]; then
         echo "${ip_address} ${hostname} ${mac_address}" >> /tmp/wifi_clients.txt
         local_msg="New device JOINED the network, sending it to telegram..."
         logger -p local0.info -t dhcp-join-notify "$local_msg"
-send_to_telegram "\#$(echo "${hostname}" | sed 's/[^a-zA-Z0-9]//g') JOINED \#${device_name}:
-\`\`\`
+        send_to_telegram "\#$(echo "${hostname}" | sed 's/[^a-zA-Z0-9]//g') JOINED \#${device_name}:
 Time: $(date "+%A %d-%b-%Y %T")
 Hostname: ${hostname}
 IP Address: ${ip_address}
-MAC Address: [Copy MAC Address](tg://copy?text=${mac_address})
-\`\`\`"
-
-
+MAC Address: ${mac_address}"
     fi
 fi
-
-# THIS SCRIPT WAS WRITTEN BY https://www.facebook.com/galihpa/
-# CHECK OUT THE GITHUB REPO AT: https://github.com/hillz2/OpenWrt_WiFi_Client_Notification
